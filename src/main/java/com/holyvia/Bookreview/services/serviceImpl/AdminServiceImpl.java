@@ -42,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
             throw new AlreadyExistsException("This User with email address already exists");
         User adminUser = new User();
         BeanUtils.copyProperties(adminRequestDto, adminUser);
+        adminUser.setRole(Role.ADMIN);
         adminUser.setVerificationStatus(false);
         adminUser.setPassword(passwordEncoder.encode(adminRequestDto.getPassword()));
         userRepository.save(adminUser);
@@ -57,7 +58,7 @@ public class AdminServiceImpl implements AdminService {
                 "Verify your email address",
                 "Hello " + adminUser.getFirstName() + " " + adminUser.getLastName() + ", Thank you for your interest in using our Application." +
                         "To complete your registration, we need you to verify your email address \n" + "http://" +
-                        request.getServerName() + ":3000" + "/verifyRegistration?token=" + registrationToken);
+                        request.getServerName() + ":8080" + "/api/v1/verifyRegistration?token=" + registrationToken);
 
         SignupResponseDto signupResponseDto = new SignupResponseDto();
         BeanUtils.copyProperties(adminUser, signupResponseDto);
