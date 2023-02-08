@@ -1,23 +1,20 @@
 package com.holyvia.Bookreview.services.serviceImpl;
 
-import com.holyvia.Bookreview.configurations.tokens.TokenService;
-import com.holyvia.Bookreview.configurations.userDetails.AppUserDetailsService;
 import com.holyvia.Bookreview.dtos.SignupRequestDto;
 import com.holyvia.Bookreview.dtos.SignupResponseDto;
 import com.holyvia.Bookreview.entities.Token;
 import com.holyvia.Bookreview.entities.User;
 import com.holyvia.Bookreview.enums.Role;
-import com.holyvia.Bookreview.enums.TokenStatus;
 import com.holyvia.Bookreview.exceptions.AlreadyExistsException;
 import com.holyvia.Bookreview.exceptions.InvalidTokenException;
 import com.holyvia.Bookreview.repositories.TokenRepository;
 import com.holyvia.Bookreview.repositories.UserRepository;
 import com.holyvia.Bookreview.services.AdminService;
 import com.holyvia.Bookreview.services.JavaMailService;
+import com.holyvia.Bookreview.services.UserTokenService;
+import com.holyvia.Bookreview.services.converters.UserConverterService;
 import com.holyvia.Bookreview.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,39 +26,24 @@ import static com.holyvia.Bookreview.enums.TokenStatus.EXPIRED;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
-    private final TokenService tokenService;
+    private final UserTokenService userTokenService;
+
+    private final UserConverterService userConverterService;
     private final TokenRepository tokenRepository;
     private final JavaMailService javaMailService;
     private final HttpServletRequest request;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ApiResponse<SignupResponseDto> signupAdmin(SignupRequestDto adminRequestDto) throws IOException {
-        boolean user = userRepository.existsByEmail(adminRequestDto.getEmail());
-        if (user)
-            throw new AlreadyExistsException("This User with email address already exists");
-        User adminUser = new User();
-        BeanUtils.copyProperties(adminRequestDto, adminUser);
-        adminUser.setRole(Role.ADMIN);
-        adminUser.setVerificationStatus(false);
-        adminUser.setPassword(passwordEncoder.encode(adminRequestDto.getPassword()));
+        validateUser(adminRequestDto.getEmail());
+        User adminUser = userConverterService.fromSignupRequestDto(adminRequestDto, Role.ADMIN);
+
         userRepository.save(adminUser);
+        String registrationToken = userTokenService.generateAndSaveToken(adminUser);
 
-        String registrationToken = tokenService.generateVerificationToken(adminRequestDto.getEmail());
-        Token token = new Token();
-        token.setToken(registrationToken);
-        token.setTokenStatus(TokenStatus.ACTIVE);
-        token.setUser(adminUser);
-        tokenRepository.save(token);
+        sendMail(adminRequestDto.getEmail(), adminUser, registrationToken);
 
-        javaMailService.sendMail(adminRequestDto.getEmail(),
-                "Verify your email address",
-                "Hello " + adminUser.getFirstName() + " " + adminUser.getLastName() + ", Thank you for your interest in using our Application." +
-                        "To complete your registration, we need you to verify your email address \n" + "http://" +
-                        request.getServerName() + ":8080" + "/api/v1/verifyRegistration?token=" + registrationToken);
-
-        SignupResponseDto signupResponseDto = new SignupResponseDto();
-        BeanUtils.copyProperties(adminUser, signupResponseDto);
+        SignupResponseDto signupResponseDto = userConverterService.toSignupResponseDto(adminUser);
         return new ApiResponse<>("Admin Registration Successful", true, signupResponseDto);
     }
 
@@ -74,5 +56,20 @@ public class AdminServiceImpl implements AdminService {
         verifyToken.setTokenStatus(EXPIRED);
         tokenRepository.save(verifyToken);
         return new ApiResponse<String>("Account verification successful", true, null);
+    }
+
+    private void sendMail(String email, User user, String registrationToken) throws IOException {
+        javaMailService.sendMail(email,
+                "Verify your email address",
+                "Hello " + user.getFirstName() + " " + user.getLastName() + ", Thank you for your interest in using our Application." +
+                        "To complete your registration, we need you to verify your email address \n" + "http://" +
+                        request.getServerName() + ":8080" + "/api/v1/verifyRegistration?token=" + registrationToken);
+    }
+
+
+    private void validateUser(String email){
+        boolean user = userRepository.existsByEmail(email);
+        if (user)
+            throw new AlreadyExistsException("This User with email address already exists");
     }
 }
