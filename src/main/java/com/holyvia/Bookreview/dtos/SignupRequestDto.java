@@ -1,6 +1,7 @@
 package com.holyvia.Bookreview.dtos;
 
 import com.holyvia.Bookreview.enums.Gender;
+import com.holyvia.Bookreview.enums.Role;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -41,5 +42,8 @@ public class SignupRequestDto {
 
     @Size(min = 11, max = 14, message = "Phone number must have a minimum length of 11 and maximum of 15")
     private String phoneNumber;
+
+    @NotNull(message = "Role is mandatory")
+    private Role role;
 
 }
