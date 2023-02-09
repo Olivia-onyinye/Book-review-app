@@ -1,0 +1,56 @@
+name: Book-review app CI pipeline
+on:
+  push:
+    branches:
+      -  "main"
+  pull_request:
+    branches:
+      -  "main"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: setup java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: maven
+
+      - name: setup Maven
+        uses: stCarolas/setup-maven@v4.4
+        with:
+          maven-version: 3.8.2
+      - name: run compile
+        run: mvn clean install
+
+#      - name: Generate build number
+#        uses: einaregilsson/build-number@v3
+#        with:
+#          token: ${{secrets.github_token}}
+
+#      - name: Build and push Docker image
+#        uses: mr-smithers-excellent/docker-build-push@v5
+#        with:
+#          image: holyvia/fashion-blog-app-image
+#          tags: $BUILD_NUMBER
+#          registry: docker.io
+#          dockerfile: Dockerfile
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_PASSWORD }}
+
+#      - name: Build with Maven
+#        run: mvn clean install
+#
+#      - name: Build & push Docker image
+#        uses: mr-smithers-excellent/docker-build-push@v5
+#        with:
+#          image: oakland2022/oakland
+#          tags: latest
+#          registry: docker.io
+#          dockerfile: Dockerfile
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_PASSWORD }
