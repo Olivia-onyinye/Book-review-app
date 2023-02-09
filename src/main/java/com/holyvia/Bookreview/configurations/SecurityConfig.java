@@ -42,7 +42,7 @@ public class SecurityConfig {
 
     private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/auth/**","/v2/api-docs/**",
             "/v3/api-docs/**","/configuration/**", "/swagger*/**","/swagger-ui/**","/webjars/**",
-            "/swagger-ui.html", "/api/v1/user/signup","/api/v1/verifyRegistration/**", "/api/v1/admin/signup",
+            "/swagger-ui.html", "/api/v1/signup","/api/v1/verifyRegistration/**", "/api/v1/admin/signup",
     };
     private final AppUserDetailsService appUserDetailsService;
     private static final String AUTHORITY_PREFIX = "ROLE_";

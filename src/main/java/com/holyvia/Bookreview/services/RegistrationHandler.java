@@ -12,4 +12,5 @@ public interface RegistrationHandler {
     boolean canHandle(Role role);
 
     ApiResponse<SignupResponseDto> handleRegistration(SignupRequestDto signupRequestDto) throws IOException;
+
 }

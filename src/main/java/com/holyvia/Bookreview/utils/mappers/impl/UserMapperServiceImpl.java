@@ -1,10 +1,10 @@
-package com.holyvia.Bookreview.services.converters.impl;
+package com.holyvia.Bookreview.utils.mappers.impl;
 
 import com.holyvia.Bookreview.dtos.SignupRequestDto;
 import com.holyvia.Bookreview.dtos.SignupResponseDto;
 import com.holyvia.Bookreview.entities.User;
 import com.holyvia.Bookreview.enums.Role;
-import com.holyvia.Bookreview.services.converters.UserConverterService;
+import com.holyvia.Bookreview.utils.mappers.UserMapperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserConverterServiceImpl implements UserConverterService {
+public class UserMapperServiceImpl implements UserMapperService {
 
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User fromSignupRequestDto(SignupRequestDto signupRequestDto, Role role) {
+    public User fromSignupRequestDtoToUser(SignupRequestDto signupRequestDto, Role role) {
         User user = new User();
         BeanUtils.copyProperties(signupRequestDto, user);
         user.setRole(role);
@@ -27,7 +27,7 @@ public class UserConverterServiceImpl implements UserConverterService {
     }
 
     @Override
-    public SignupResponseDto toSignupResponseDto(User user) {
+    public SignupResponseDto userToSignupResponseDto(User user) {
         SignupResponseDto signupResponseDto = new SignupResponseDto();
         BeanUtils.copyProperties(user, signupResponseDto);
         return signupResponseDto;

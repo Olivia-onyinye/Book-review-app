@@ -1,6 +1,5 @@
 package com.holyvia.Bookreview.configurations;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,7 +15,7 @@ public class JavaMailConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
         mailSender.setUsername("holyviabookreview@gmail.com");
-        mailSender.setPassword("rspxfcpigwwimeec");
+        mailSender.setPassword("zkpqdnwjacvyfswx");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

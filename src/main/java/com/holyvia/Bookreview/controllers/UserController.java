@@ -22,13 +22,13 @@ public class UserController {
     private final UserServiceWithHandler userServiceWithHandler;
 
 
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponseDto>> signup(@Valid @RequestBody SignupRequestDto requestDto) throws IOException {
         return new ResponseEntity<>(userServiceWithHandler.signupUser(requestDto),HttpStatus.CREATED);
     }
 
     @GetMapping("/verifyRegistration")
     public ResponseEntity<ApiResponse<String>> verifyAccount(@RequestParam("token") String token){
-        return new ResponseEntity<>(userService.verifyRegistration(token), HttpStatus.OK);
+        return new ResponseEntity<>(userServiceWithHandler.verifyRegistration(token), HttpStatus.OK);
     }
 }
