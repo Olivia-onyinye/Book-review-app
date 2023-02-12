@@ -40,6 +40,6 @@ public class UserServiceWithHandlerImpl  implements UserServiceWithHandler {
         verifyToken.getUser().setVerificationStatus(true);
         verifyToken.setTokenStatus(EXPIRED);
         tokenRepository.save(verifyToken);
-        return new ApiResponse<String>("Account verification successful", true, null);
+        return new ApiResponse<String>("Congratulations!, your Account has been successfully verified", true, null);
     }
 }
