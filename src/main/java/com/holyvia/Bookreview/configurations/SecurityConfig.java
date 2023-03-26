@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -41,7 +42,7 @@ import static com.holyvia.Bookreview.enums.Role.USER;
 public class SecurityConfig {
 
     private final String[] WHITE_LISTED_URLS = { "/", "/home", "index", "/css/*", "/js/*", "/api/v1/auth/**","/v2/api-docs/**",
-            "/v3/api-docs/**","/configuration/**", "/swagger*/**","/swagger-ui/**","/webjars/**",
+            "/v3/api-docs/**","/configuration/**", "/swagger*/**","/swagger-ui/**","/webjars/**", "/api/v1/admin/**",
             "/swagger-ui.html", "/api/v1/signup","/api/v1/verifyRegistration/**", "/api/v1/admin/signup",
     };
     private final AppUserDetailsService appUserDetailsService;
@@ -67,7 +68,7 @@ public class SecurityConfig {
                 }).and().csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> {
                 auth.antMatchers(WHITE_LISTED_URLS).permitAll()
-                        .antMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name())
+                        //.antMatchers("/api/v1/admin/**").hasAnyRole(ADMIN.name())
                         .antMatchers("/api/v1/user/**").hasAnyRole(USER.name())
                         .anyRequest().authenticated();
                 })
@@ -112,5 +113,11 @@ public class SecurityConfig {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwtCoder.jwtDecoder());
         provider.setJwtAuthenticationConverter(getJwtAuthenticationConverter());
         return provider;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+
+        return new RestTemplate();
     }
 }

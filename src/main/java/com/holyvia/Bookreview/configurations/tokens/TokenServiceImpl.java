@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +21,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
+        //Date ex = new Date(now.plus(24, ChronoUnit.HOURS).toEpochMilli());
         String roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 

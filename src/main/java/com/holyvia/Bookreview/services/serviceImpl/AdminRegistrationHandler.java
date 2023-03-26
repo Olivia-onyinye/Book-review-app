@@ -58,7 +58,7 @@ public class AdminRegistrationHandler implements RegistrationHandler {
                 "Verify your email address",
                 "Hello " + user.getFirstName() + " " + user.getLastName() + ", Thank you for your interest in using our Application." +
                         "To complete your registration, we need you to verify your email address \n" + "http://" +
-                        request.getServerName() + ":8080" + "/api/v1/verifyRegistration?token=" + registrationToken);
+                        request.getServerName() + ":8081" + "/api/v1/verifyRegistration?token=" + registrationToken);
     }
 
 

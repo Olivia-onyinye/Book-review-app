@@ -1,7 +1,10 @@
 version: '3.8'
 services:
-  API:
-    image: book-review
+  app:
+    image: 'book-review'
+    container_name: bookReviewApp
+    build: .
+    restart: always
     ports:
       - "8080:8080"
     depends_on:
@@ -13,13 +16,14 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   db:
-    image: postgres:13.3-alpine
+    image: 'postgres:13.3-alpine'
+    container_name: bookReview_db
+    restart: always
     ports:
       - "5432:5432"
 
     environment:
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_PASSWORD=myPassword
       - POSTGRES_DB=book-review
       - POSTGRES_HOST_AUTH_METHOD=trust
-
