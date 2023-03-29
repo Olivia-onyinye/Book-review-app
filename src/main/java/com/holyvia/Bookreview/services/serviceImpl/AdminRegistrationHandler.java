@@ -22,7 +22,17 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class AdminRegistrationHandler implements RegistrationHandler {
+public class
+
+
+
+
+
+
+
+
+
+AdminRegistrationHandler implements RegistrationHandler {
 
     private final UserRepository userRepository;
     private final TokenService tokenService;
